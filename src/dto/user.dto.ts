@@ -6,4 +6,10 @@ export class UserDto {
 
     @Expose()
     favorites!: string[];
+
+    @Expose({ name: "created_at" })
+    created_at!: Date;
+
+    @Expose({ name: "updated_at" })
+    updated_at!: Date;
 }

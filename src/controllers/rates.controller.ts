@@ -1,0 +1,16 @@
+import { Router } from 'express';
+import { getRates } from '../services/rates.service';
+import { getUser } from '../services/user.service';
+
+export const router = Router();
+
+router.get('/', async (req, res) => {
+  const user_id = req.cookies.user_id!;
+  const user = await getUser(user_id);
+
+  const base = (req.query.base as string) || user.base_currency;
+  const targets = req.query.targets as string | undefined;
+  
+  const rates = await getRates(base, targets);
+  res.json({ success: true, data: rates });
+});

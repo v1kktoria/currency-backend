@@ -7,9 +7,9 @@ export class CachedRateRepository {
 
   async getRates(base_currency: string, targets?: string[]): Promise<CachedRate[]> {
     if (targets?.length) {
-        return await this.repo.findBy({
-            base_currency,
-            target_currency: In(targets),
+      return await this.repo.findBy({
+        base_currency,
+        target_currency: In(targets),
       });
     }
     

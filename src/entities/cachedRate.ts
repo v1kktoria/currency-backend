@@ -4,14 +4,14 @@ import { Column, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 export class CachedRate {
     
     @PrimaryColumn({ type: "varchar", length: 3 })
-    base_currency!: string;
+      base_currency!: string;
 
     @PrimaryColumn({ type: "varchar", length: 3 })
-    target_currency!: string;
+      target_currency!: string;
 
     @Column("numeric")
-    rate!: number;
+      rate!: number;
 
     @UpdateDateColumn({ type: "timestamptz"})
-    updated_at!: Date;
+      updated_at!: Date;
 }

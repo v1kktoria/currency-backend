@@ -7,9 +7,9 @@ AppDataSource.initialize()
   .then(() => {
     console.log("Database connected");
     app.listen(PORT, () => {
-    console.log('Server running at http://localhost:${PORT}');
-  });
+      console.log('Server running at http://localhost:${PORT}');
+    });
   })
   .catch((err) => {
-    console.log(err)
-  })
+    console.log(err);
+  });

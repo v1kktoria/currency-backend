@@ -18,4 +18,4 @@ export const AppDataSource = new DataSource({
   entities: [User, CachedCurrency, CachedRate],
   migrations: [],
   subscribers: [],
-})
+});

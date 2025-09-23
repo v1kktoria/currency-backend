@@ -4,8 +4,8 @@ import { Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 export class CachedCurrency {
 
     @PrimaryColumn({ type: "varchar", length: 3 })
-    code!: string;
+      code!: string;
 
     @UpdateDateColumn({ type: "timestamptz" })
-    updated_at!: Date;
+      updated_at!: Date;
 }

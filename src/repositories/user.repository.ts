@@ -5,7 +5,7 @@ import { UpdateUserRequest } from "../types/user";
 export class UserRepository {
   private repo = AppDataSource.getRepository(User);
 
-   async getUser(user_id: string): Promise<User | null> {
+  async getUser(user_id: string): Promise<User | null> {
     return await this.repo.findOneBy({ user_id });
   }
 

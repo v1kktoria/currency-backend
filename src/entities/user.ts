@@ -5,17 +5,17 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 export class User {
 
     @PrimaryGeneratedColumn("uuid")
-    user_id!: string;
+      user_id!: string;
 
     @Column({ type: "varchar",  length: 3, default: "USD" })
-    base_currency!: string;
+      base_currency!: string;
 
     @Column("varchar", {array: true, default: []})
-    favorites!: string[];
+      favorites!: string[];
 
     @CreateDateColumn({ type: "timestamptz" })
-    created_at!: Date;
+      created_at!: Date;
 
     @UpdateDateColumn({ type: "timestamptz" })
-    updated_at!: Date;
+      updated_at!: Date;
 }

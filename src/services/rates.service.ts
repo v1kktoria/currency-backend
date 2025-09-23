@@ -1,33 +1,35 @@
-import axios from "axios"; 
-import { ExchangeApiResponse } from '../types/exchange';
-import { Rate } from '../types/rate';
-import { ApiError } from '../utils/errors';
+import { RatesApiService } from "./api/ratesApi.service";
+import { MemoryCacheService } from "./cache/memoryCache.service";
+import { CachedRateRepository } from "../repositories/cachedRate.repository";
+import { Rate } from "../types/rate";
+import { RateCacheService } from "./cache/cahedRates.service";
 
-const API_URL = 'https://open.er-api.com/v6/latest';
+const apiService = new RatesApiService();
+const rateCacheService = new RateCacheService(new CachedRateRepository());
+const memoryCache = new MemoryCacheService();
 
-export const getRates = async(base: string, targets?: string | string[]): Promise<Rate[]> => {
-  try {
-    const response = await axios.get<ExchangeApiResponse>(`${API_URL}/${base}`);
-    if (response.data.result !== 'success') {
-      throw ApiError.badRequest(`Валюта "${base}" не поддерживается`);
-    }
+export const getRates = async (userId: string, base: string, targets?: string | string[]): Promise<Rate[]> => {
+  const key = `${userId}:${base}:${targets?.toString() ?? ""}`;
+  const memCached = memoryCache.get<Rate[]>(key);
+  if (memCached) return memCached;
 
-    const rates = response.data.rates;
-    const targetArray = Array.isArray(targets) ? targets : targets?.split(',') ?? Object.keys(rates);
+  const targetArray = Array.isArray(targets) ? targets : targets?.split(",") ?? undefined;
+  let rates = await rateCacheService.getFresh(base, targetArray);
 
-    return targetArray.map((currency) => {
-      const rate = rates[currency];
-      if (rate === undefined) throw ApiError.badRequest(`Валюта "${currency}" не поддерживается`); 
-      
-      return {
-        base_currency: base,
-        target_currency: currency,
-        rate,
-        timestamp: new Date().toISOString(),
-  };
-});
-  } catch (err: unknown) {
-    if (err instanceof ApiError) throw err;
-    throw ApiError.internal('Неожиданная ошибка при получении курсов валют', {message: (err as Error).message,});
+  if (!rates) {
+    const apiRates = await apiService.fetchRates(base);
+    const finalTargets = targetArray ?? Object.keys(apiRates);
+
+    rates = finalTargets.map((currency) => ({
+      base_currency: base,
+      target_currency: currency,
+      rate: apiRates[currency],
+      updated_at: new Date().toISOString(),
+    }));
+
+    await rateCacheService.save(rates);
   }
+
+  memoryCache.set(key, rates);
+  return rates;
 };

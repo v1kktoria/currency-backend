@@ -11,6 +11,6 @@ router.get('/', async (req, res) => {
   const base = (req.query.base as string) || user.base_currency;
   const targets = req.query.targets as string | undefined;
   
-  const rates = await getRates(base, targets);
+  const rates = await getRates(user_id, base, targets);
   res.json({ success: true, data: rates });
 });

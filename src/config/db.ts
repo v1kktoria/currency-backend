@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
 import { User } from "../entities/user";
+import { CachedCurrency } from "../entities/cachedCurrency";
+import { CachedRate } from "../entities/cachedRate";
 
 dotenv.config();
 
@@ -13,7 +15,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
-  entities: [User],
+  entities: [User, CachedCurrency, CachedRate],
   migrations: [],
   subscribers: [],
 })

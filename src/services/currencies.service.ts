@@ -1,25 +1,25 @@
-import axios from "axios";
+import { CurrenciesApiService } from "./api/currenciesApi.service";
+import { MemoryCacheService } from "./cache/memoryCache.service";
+import { CachedCurrencyRepository } from "../repositories/cachedCurrency.repository";
 import { Currency } from "../types/currency";
-import { ExchangeApiResponse } from "../types/exchange";
-import { ApiError } from "../utils/errors";
+import { CurrencyCacheService } from "./cache/cachedCurrencies.service";
 
-const API_URL = "https://open.er-api.com/v6/latest/USD";
+const apiService = new CurrenciesApiService();
+const currencyCacheService = new CurrencyCacheService(new CachedCurrencyRepository());
+const memoryCache = new MemoryCacheService();
 
-export const getCurrencies = async (): Promise<Currency[]> => {
-  try {
-    const response = await axios.get<ExchangeApiResponse>(API_URL);
+export const getCurrencies = async (userId: string): Promise<Currency[]> => {
+  const key = `${userId}:currencies`;
 
-    if (response.data.result !== "success") {
-      throw ApiError.badRequest("Ошибка внешнего API", { response: response.data });
-    }
+  const memCached = memoryCache.get<Currency[]>(key);
+  if (memCached) return memCached;
 
-    const rates = response.data.rates;
-
-    if (!rates || Object.keys(rates).length === 0) throw ApiError.notFound("В ответе API нет доступных валют");
-
-    return Object.keys(rates).map((code) => ({ code }));
-  } catch (err: unknown) {
-    if (err instanceof ApiError) throw err;
-    throw ApiError.internal("Неожиданная ошибка при получении валют", { message: (err as Error).message,});
+  let currencies = await currencyCacheService.getFresh();
+  if (!currencies) {
+    currencies = await apiService.fetchCurrencies();
+    await currencyCacheService.save(currencies);
   }
+
+  memoryCache.set(key, currencies);
+  return currencies;
 };

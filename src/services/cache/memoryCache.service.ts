@@ -4,7 +4,7 @@ interface CacheEntry<T> {
 }
 
 export class MemoryCacheService {
-  private cache = new Map<string, CacheEntry<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
   private TTL = 5 * 60 * 1000;
 
   get<T>(key: string): T | null {
@@ -14,7 +14,7 @@ export class MemoryCacheService {
       this.cache.delete(key);
       return null;
     }
-    return entry.value;
+    return entry.value as T;
   }
 
   set<T>(key: string, value: T): void {

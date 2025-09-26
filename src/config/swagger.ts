@@ -10,7 +10,7 @@ const options = {
       version: "1.0.0",
       description: "Документация",
     },
-    servers: [{ url: "http://localhost:3000" }],
+    servers: [{ url: process.env.URL }],
   },
   apis: ["./src/controllers/*.ts"],
 };

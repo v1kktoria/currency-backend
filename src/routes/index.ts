@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { router as userRouter } from './user.controller';
-import { router as currenciesRouter } from './currencies.controller';
-import { router as ratesRouter } from './rates.controller';
+import currenciesRouter from "./currencies.routes";
+import userRouter from "./user.routes";
+import ratesRouter from "./rates.routes";
 import { setUserCookie } from '../middleware/setUserCookie';
 
 export const router = Router();

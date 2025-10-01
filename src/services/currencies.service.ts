@@ -1,10 +1,10 @@
-import { CurrenciesApiService } from "./api/currenciesApi.service";
 import { MemoryCacheService } from "./cache/memoryCache.service";
 import { CachedCurrencyRepository } from "../repositories/cachedCurrency.repository";
 import { Currency } from "../types/currency";
 import { CurrencyCacheService } from "./cache/cachedCurrencies.service";
+import { ExchangeApiService } from "./api/exchangeApi.service";
 
-const apiService = new CurrenciesApiService();
+const apiService = new ExchangeApiService();
 const currencyCacheService = new CurrencyCacheService(new CachedCurrencyRepository());
 const memoryCache = new MemoryCacheService();
 

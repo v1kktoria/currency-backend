@@ -1,11 +1,11 @@
-import { RatesApiService } from "./api/ratesApi.service";
 import { MemoryCacheService } from "./cache/memoryCache.service";
 import { CachedRateRepository } from "../repositories/cachedRate.repository";
 import { Rate } from "../types/rate";
 import { RateCacheService } from "./cache/cahedRates.service";
 import { ApiError } from "../utils/errors";
+import { ExchangeApiService } from "./api/exchangeApi.service";
 
-const apiService = new RatesApiService();
+const apiService = new ExchangeApiService();
 const rateCacheService = new RateCacheService(new CachedRateRepository());
 const memoryCache = new MemoryCacheService();
 
